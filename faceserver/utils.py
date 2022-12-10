@@ -6,8 +6,16 @@ import numpy as np
 from PIL import Image
 
 
-def decode_image(image_bytes: bytes) -> np.ndarray:
-    return np.asarray(Image.open(io.BytesIO(image_bytes)))
+def decode_image(image_bytes: str, shape) -> np.ndarray:
+    # return np.asarray(Image.open(io.BytesIO(image_bytes)))
+    r = base64.decodebytes(image_bytes.encode("utf-8"))
+    q = np.frombuffer(r, dtype=np.uint8).reshape(shape)
+    return q
+
+
+def encode_image(image: np.ndarray) -> np.ndarray:
+    # return np.asarray(Image.open(io.BytesIO(image_bytes)))
+    return base64.b64encode(image.astype(np.uint8)).decode("utf-8")
 
 
 def base64_decode_image(a, dtype, shape):

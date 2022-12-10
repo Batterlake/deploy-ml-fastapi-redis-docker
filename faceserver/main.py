@@ -37,8 +37,8 @@ def collect_images(queue_key, batch_size):
     queue = get_batch_from_queue(queue_key, batch_size)
     for q in queue:
         # Deserialize the object and obtain the input image
-        # q = json.loads(q.decode("utf-8"))
-        batch.append(U.decode_image(q["image"]))
+        q = json.loads(q.decode("utf-8"))
+        batch.append(U.decode_image(q["image"], q["shape"]))
 
         # Update the list of image IDs
         imageIDs.append(q["id"])
@@ -87,7 +87,14 @@ def detect_embed_process(
             for f, l, emb in zip(faces, locations, embeddings):
                 # Initialize the list of output predictions
                 # Store the output predictions in the database, using image ID as the key so we can fetch the results
-                output.append({"faces": f, "location": l, "embedding": emb.tolist()})
+                output.append(
+                    {
+                        "face": U.encode_image(f),
+                        "location": l,
+                        "embedding": emb.tolist(),
+                        "shape": f.shape,
+                    }
+                )
             db.set(
                 uid,
                 json.dumps(output),
@@ -100,6 +107,8 @@ def detect_embed_process(
 if __name__ == "__main__":
     args = parse_args()
     if args.service == 0:
-        detect_embed_process(S.IMAGE_QUEUE, S.DETECTOR_BACKEND, S.RECOGNIZER_BACKEND)
+        detect_embed_process(
+            S.DETECT_IMAGE_QUEUE, S.DETECTOR_BACKEND, S.RECOGNIZER_BACKEND
+        )
     else:
-        embed_process(S.IMAGE_QUEUE, S.BATCH_SIZE, S.RECOGNIZER_BACKEND)
+        embed_process(S.EMBED_IMAGE_QUEUE, S.BATCH_SIZE, S.RECOGNIZER_BACKEND)
