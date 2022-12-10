@@ -37,7 +37,7 @@ def collect_images(queue_key, batch_size):
     queue = get_batch_from_queue(queue_key, batch_size)
     for q in queue:
         # Deserialize the object and obtain the input image
-        q = json.loads(q.decode("utf-8"))
+        # q = json.loads(q.decode("utf-8"))
         batch.append(U.decode_image(q["image"]))
 
         # Update the list of image IDs

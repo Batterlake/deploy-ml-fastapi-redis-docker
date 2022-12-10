@@ -2,7 +2,13 @@ FROM python:3.8-slim-buster
 
 COPY requirements.txt /app/
 
-RUN pip install -r /app/requirements.txt
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+
+RUN pip install Pillow
+RUN pip install redis
+RUN pip install opencv-contrib-python-headless
+RUN pip install deepface
 
 COPY . /app
 

@@ -1,4 +1,4 @@
 Pillow
 redis
-opcv-python
+opencv-contrib-python-headless
 deepface

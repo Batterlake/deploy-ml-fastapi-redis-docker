@@ -23,7 +23,8 @@ def predict(request: Request, img_file: bytes = File(...)):
     # Generate an ID for the classification then add the classification ID + image to the queue
     k = str(uuid.uuid4())
     d = {"id": k, "image": img_file}
-    db.rpush(S.IMAGE_QUEUE, json.dumps(d))
+    # db.rpush(S.IMAGE_QUEUE, json.dumps(d))
+    db.rpush(S.IMAGE_QUEUE, d)
 
     # Keep looping for CLIENT_MAX_TRIES times
     num_tries = 0
