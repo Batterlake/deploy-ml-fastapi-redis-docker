@@ -2,6 +2,7 @@ import json
 import time
 from argparse import ArgumentParser
 
+import im_compress as IC
 import model as M
 import redis
 import settings as S
@@ -38,7 +39,8 @@ def collect_images(queue_key, batch_size):
     for q in queue:
         # Deserialize the object and obtain the input image
         q = json.loads(q.decode("utf-8"))
-        batch.append(U.decode_image(q["image"], q["shape"]))
+        batch.append(IC.image_from_base64(q["image"]))
+        # batch.append(U.decode_image(q["image"], q["shape"]))
 
         # Update the list of image IDs
         imageIDs.append(q["id"])
@@ -89,10 +91,10 @@ def detect_embed_process(
                 # Store the output predictions in the database, using image ID as the key so we can fetch the results
                 output.append(
                     {
-                        "face": U.encode_image(f),
+                        # "face": U.encode_image(f),
                         "location": l,
                         "embedding": emb.tolist(),
-                        "shape": f.shape,
+                        # "shape": f.shape,
                     }
                 )
             db.set(
@@ -105,6 +107,9 @@ def detect_embed_process(
 
 
 if __name__ == "__main__":
+    _ = M.FaceDetector.build_model(S.DETECTOR_BACKEND)
+    _ = M.DeepFace.build_model(S.RECOGNIZER_BACKEND)
+
     args = parse_args()
     if args.service == 0:
         detect_embed_process(

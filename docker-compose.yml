@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   redis:
     image: redis
     networks:
@@ -75,3 +76,6 @@ services:
 
 networks:
   deployml_network:
+  postgres:
+    driver: bridge
+  

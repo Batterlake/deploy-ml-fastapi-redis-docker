@@ -20,13 +20,12 @@ def health_check():
 def detect(
     request: Request,
     img_base64: str = File(...),
-    shape=(480, 640, 3),
 ):
     data = {"success": False}
 
     # Generate an ID for the classification then add the classification ID + image to the queue
     k = str(uuid.uuid4())
-    d = {"id": k, "image": img_base64, "shape": shape}
+    d = {"id": k, "image": img_base64}
     db.rpush(S.DETECT_IMAGE_QUEUE, json.dumps(d))
 
     # Keep looping for CLIENT_MAX_TRIES times
@@ -66,13 +65,12 @@ def detect(
 def embed(
     request: Request,
     img_base64: str = File(...),
-    shape=(480, 640, 3),
 ):
     data = {"success": False}
 
     # Generate an ID for the classification then add the classification ID + image to the queue
     k = str(uuid.uuid4())
-    d = {"id": k, "image": img_base64, "shape": shape}
+    d = {"id": k, "image": img_base64}
     db.rpush(S.EMBED_IMAGE_QUEUE, json.dumps(d))
 
     # Keep looping for CLIENT_MAX_TRIES times
