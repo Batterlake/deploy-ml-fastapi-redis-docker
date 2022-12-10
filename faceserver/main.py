@@ -1,17 +1,8 @@
-"""
-Model server script that polls Redis for images to classify
-
-Adapted from https://www.pyimagesearch.com/2018/02/05/deep-learning-production-keras-redis-flask-apache/
-"""
-import base64
 import json
-import os
-import sys
 import time
 from argparse import ArgumentParser
 
 import model as M
-import numpy as np
 import redis
 import settings as S
 import utils as U
