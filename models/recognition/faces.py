@@ -13,5 +13,6 @@ def get_face_embeddings(
     embed = lambda face: DeepFace.represent(face, 
                                             model_name=backend, 
                                             enforce_detection=False, 
+                                            detector_backend='skip',
                                             align=False) 
     return list(map(embed, images))

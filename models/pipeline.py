@@ -1,7 +1,6 @@
 from typing import List
 from PIL import Image
 import numpy as np
-import cv2
 
 from detection.yolo import Detector
 from recognition.faces import get_face_embeddings
