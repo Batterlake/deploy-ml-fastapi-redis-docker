@@ -12,7 +12,7 @@ class Pipeline:
     def __init__(self, device: str='cpu') -> None:
         self._detector = Detector(device=device)
     
-    def run(self, image: np.ndarray)
+    def run(self, image: np.ndarray):
         pass
 
 
