@@ -1,0 +1,8 @@
+opencv-python
+numpy
+pillow
+yolov5
+deepface
+torch
+torchvision
+git+https://github.com/ria-com/modelhub-client.git
