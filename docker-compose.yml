@@ -100,4 +100,3 @@ networks:
   deployml_network:
   postgres:
     driver: bridge
-  
