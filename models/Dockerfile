@@ -19,9 +19,10 @@ RUN pip3 install torch
 RUN pip3 install torchvision
 RUN pip3 install git+https://github.com/ria-com/modelhub-client.git
 
-RUN pip install redis
-RUN pip install deepface
-RUN pip install psycopg2
+RUN pip3 install redis
+RUN pip3 install deepface
+RUN pip3 install psycopg2-binary
+RUN pip3 install scikit-learn
 
 COPY . /app
 

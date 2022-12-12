@@ -68,7 +68,7 @@ def process_frontend_request(detector, queue_key):
 
 def get_file_from_fs(data_folder: str):
     filename = np.random.choice(os.listdir(data_folder))
-    return Image.open(f"{data_folder}/{filename}")
+    return Image.open(f"{data_folder}/{filename}").convert("RGB")
 
 
 # def commit_results(results):
@@ -152,6 +152,7 @@ def process_fs(
     result = detector.predict(image)
     faces = result["faces"]
     plates = result["plates"]
+    print(plates)
 
     plate_texts = recognize_plates(plates)
     license = None
