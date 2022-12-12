@@ -57,12 +57,20 @@ def process_image(queue_key: str, img_base64: str):
     return data
 
 
-@app.post("/detect_face")
-def detect(
-    request: Request,
-    img_base64: str = File(...),
-):
-    return process_image(S.DETECT_IMAGE_QUEUE, img_base64)
+# @app.post("/detect_face")
+# def detect(
+#     request: Request,
+#     img_base64: str = File(...),
+# ):
+#     return process_image(S.DETECT_IMAGE_QUEUE, img_base64)
+
+
+# @app.post("/embed_face")
+# def embed(
+#     request: Request,
+#     img_base64: str = File(...),
+# ):
+#     return process_image(S.EMBED_IMAGE_QUEUE, img_base64)
 
 
 @app.post("/embed_face")
@@ -70,13 +78,13 @@ def embed(
     request: Request,
     img_base64: str = File(...),
 ):
-    return process_image(S.EMBED_IMAGE_QUEUE, img_base64)
-
-
-@app.post("/license_plate")
-def plate(
-    request: Request,
-    img_base64: str = File(...),
-):
-
     return process_image(S.IMAGE_QUEUE, img_base64)
+
+
+# @app.post("/license_plate")
+# def plate(
+#     request: Request,
+#     img_base64: str = File(...),
+# ):
+
+#     return process_image(S.IMAGE_QUEUE, img_base64)

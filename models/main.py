@@ -157,7 +157,7 @@ def process_fs(
     plates = result["plates"]
 
     if len(plates) > 0:
-        print("Has plates")
+        # print("Has plates")
         plate_texts = recognize_plates(plates)
         license = None
         if len(plate_texts):
@@ -166,29 +166,34 @@ def process_fs(
             print(plate_texts[0], license)
             if license is not None:
                 print("known license")
-                commit_known_license(plates[0], license, plate_texts[0])
+            #     commit_known_license(plates[0], license, plate_texts[0])
             else:
-                print("UNKNOWN LICENSE")
-                commit_unknown_license(plates[0], plate_texts[0])
+                pass
+                # print("UNKNOWN LICENSE")
+            #     commit_unknown_license(plates[0], plate_texts[0])
         else:
-            print("OCR len 0")
+            # print("OCR len 0")
+            pass
     else:
-        print("NO PLATES")
+        # print("NO PLATES")
+        pass
 
     if len(faces):
-        print("has face")
+        # print("has face")
         embedding = np.array(get_face_embeddings([faces[0]])[0])
 
         found_closest, obj_ = query_closest(embedding)
         if found_closest and obj_ is not None:
             print("found closest")
-            commit_known_face(faces[0], obj_, embedding)  # ?!?!?!
+            # commit_known_face(faces[0], obj_, embedding)  # ?!?!?!
         else:
-            print("NO CLOSEST")
-            commit_unknown_face(faces[0], embedding)
+            pass
+            # print("NO CLOSEST")
+            # commit_unknown_face(faces[0], embedding)
 
     else:
-        print("NO FACES")
+        pass
+        # print("NO FACES")
 
 
 def embed_process(detector, queue_key: str, data_folder: str):
