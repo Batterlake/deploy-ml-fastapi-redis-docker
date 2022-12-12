@@ -56,12 +56,13 @@ def process_frontend_request(detector, queue_key):
         pred = detector.predict(batch[0])
         faces = pred["faces"]
         face_areas = list(map(area, faces))
-        face = faces[np.argmax(face_areas)]
-        # plates = pred["plates"]
+        embedding = []
+        if len(face_areas) > 0:
+            face = faces[np.argmax(face_areas)]
+            # plates = pred["plates"]
+            embedding = get_face_embeddings([face])[0]
 
-        embedding = get_face_embeddings([face])[0]
-
-        db.set(imageIDs[0], json.dumps({"embedding": embedding.tolist()}))
+        db.set(imageIDs[0], json.dumps({"embedding": embedding}))
         return True
     return False
 

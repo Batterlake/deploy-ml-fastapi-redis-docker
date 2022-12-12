@@ -1,4 +1,0 @@
-Pillow
-redis
-opencv-contrib-python-headless
-deepface

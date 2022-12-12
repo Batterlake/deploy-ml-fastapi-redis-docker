@@ -73,7 +73,7 @@ def process_image(queue_key: str, img_base64: str):
 #     return process_image(S.EMBED_IMAGE_QUEUE, img_base64)
 
 
-@app.post("/embed_face")
+@app.post("/embed_face_2")
 def embed(
     request: Request,
     img_base64: str = File(...),
