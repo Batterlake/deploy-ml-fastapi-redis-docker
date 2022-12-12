@@ -1,7 +1,10 @@
 trash/
 license_plates/ocr/data/
+data/**.jpg
+data/**.png
+data/**.jpeg
 
-db/
+db/**/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

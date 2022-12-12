@@ -167,11 +167,11 @@ def process_fs(
             print(plate_texts[0], license)
             if license is not None:
                 print("known license")
-            #     commit_known_license(plates[0], license, plate_texts[0])
+                commit_known_license(plates[0], license, plate_texts[0])
             else:
-                pass
+                # pass
                 # print("UNKNOWN LICENSE")
-            #     commit_unknown_license(plates[0], plate_texts[0])
+                commit_unknown_license(plates[0], plate_texts[0])
         else:
             # print("OCR len 0")
             pass
@@ -185,12 +185,12 @@ def process_fs(
 
         found_closest, obj_ = query_closest(embedding)
         if found_closest and obj_ is not None:
-            print("found closest")
-            # commit_known_face(faces[0], obj_, embedding)  # ?!?!?!
+            # print("found closest")
+            commit_known_face(faces[0], obj_, embedding)  # ?!?!?!
         else:
-            pass
+            # pass
             # print("NO CLOSEST")
-            # commit_unknown_face(faces[0], embedding)
+            commit_unknown_face(faces[0], embedding)
 
     else:
         pass
