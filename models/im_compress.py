@@ -51,5 +51,5 @@ def optimize_to_send(image, decode=True):
     img_enc = base64.b64encode(byte_im)
     if decode:
         img_enc = img_enc.decode("utf-8")
-    img_dump = json.dumps({"img": img_enc})
-    return img_dump
+        img_enc = json.dumps({"img": img_enc})
+    return img_enc

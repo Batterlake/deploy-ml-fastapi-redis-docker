@@ -59,7 +59,7 @@ def process_frontend_request(detector, queue_key):
         face = faces[np.argmax(face_areas)]
         # plates = pred["plates"]
 
-        embedding = get_face_embeddings([face])[0][0]
+        embedding = get_face_embeddings([face])[0]
 
         db.set(imageIDs[0], json.dumps({"embedding": embedding.tolist()}))
         return True
@@ -68,13 +68,14 @@ def process_frontend_request(detector, queue_key):
 
 def get_file_from_fs(data_folder: str):
     filename = np.random.choice(os.listdir(data_folder))
+    print(f"FILENAME: {filename}")
     return Image.open(f"{data_folder}/{filename}").convert("RGB")
 
 
 # def commit_results(results):
 def check_license(text):
     cursor = pgdb.cursor()
-    cursor.execute("select (uid, name, plate) from plates where (plate=text)")
+    cursor.execute(f"select (uid, name, plate) from plates where (plate='{text}')")
     result = cursor.fetchone()
     if result is None:
         return None
@@ -82,6 +83,7 @@ def check_license(text):
 
 
 def query_closest(embedding: np.ndarray):
+    # print(embedding)
     cursor = pgdb.cursor()
     cursor.execute(
         f"SELECT (uid, name, embedding) FROM faces ORDER BY embedding <-> '{embedding.tolist()}' LIMIT 1;"
@@ -105,7 +107,7 @@ def commit_known_license(image: np.ndarray, license_uid: str, plate_text: str):
 
     cursor = pgdb.cursor()
     cursor.execute(
-        f"insert into events (user_id, plate, img_bytes) values ({license_uid}, {plate_text}, %s)",
+        f"insert into events (user_id, plate, img_region) values ({license_uid}, {plate_text}, %s)",
         (image_bytes,),
     )
     pgdb.commit()
@@ -116,7 +118,7 @@ def commit_unknown_license(image: np.ndarray, plate_text: str):
 
     cursor = pgdb.cursor()
     cursor.execute(
-        f"insert into events (plate, img_bytes) values ({plate_text}, %s)",
+        f"insert into events (plate, img_region) values ('{plate_text}', %s)",
         (image_bytes,),
     )
     pgdb.commit()
@@ -127,7 +129,7 @@ def commit_known_face(image: np.ndarray, face_uid: str, face_vector: np.ndarray)
 
     cursor = pgdb.cursor()
     cursor.execute(
-        f"insert into events (user_id, embedding, img_bytes) values ({face_uid}, '{face_vector.tolist()}', %s)",
+        f"insert into events (user_id, embedding, img_region) values ({face_uid}, '{face_vector.tolist()}', %s)",
         (image_bytes,),
     )
     pgdb.commit()
@@ -138,7 +140,7 @@ def commit_unknown_face(image: np.ndarray, face_vector: np.ndarray):
 
     cursor = pgdb.cursor()
     cursor.execute(
-        f"insert into events (embedding, img_bytes) values ('{face_vector.tolist()}', %s)",
+        f"insert into events (embedding, img_region) values ('{face_vector.tolist()}', %s)",
         (image_bytes,),
     )
     pgdb.commit()
@@ -148,30 +150,45 @@ def process_fs(
     detector,
     data_folder: str,
 ):
+    print("******")
     image = get_file_from_fs(data_folder)
     result = detector.predict(image)
     faces = result["faces"]
     plates = result["plates"]
-    print(plates)
 
-    plate_texts = recognize_plates(plates)
-    license = None
-    if len(plate_texts):
-        license = check_license(plate_texts[0])
+    if len(plates) > 0:
+        print("Has plates")
+        plate_texts = recognize_plates(plates)
+        license = None
+        if len(plate_texts):
 
-        if license is not None:
-            commit_known_license(plates[0], license, plate_texts[0])
+            license = check_license(plate_texts[0])
+            print(plate_texts[0], license)
+            if license is not None:
+                print("known license")
+                commit_known_license(plates[0], license, plate_texts[0])
+            else:
+                print("UNKNOWN LICENSE")
+                commit_unknown_license(plates[0], plate_texts[0])
         else:
-            commit_unknown_license(plates, plate_texts[0])
+            print("OCR len 0")
+    else:
+        print("NO PLATES")
 
     if len(faces):
-        embedding = get_face_embeddings([faces[0]])[0][0]
+        print("has face")
+        embedding = np.array(get_face_embeddings([faces[0]])[0])
 
         found_closest, obj_ = query_closest(embedding)
         if found_closest and obj_ is not None:
+            print("found closest")
             commit_known_face(faces[0], obj_, embedding)  # ?!?!?!
         else:
+            print("NO CLOSEST")
             commit_unknown_face(faces[0], embedding)
+
+    else:
+        print("NO FACES")
 
 
 def embed_process(detector, queue_key: str, data_folder: str):
