@@ -12,33 +12,17 @@ RUN apt-get install ffmpeg libsm6 libxext6  -y
 # turbojpeg
 RUN apt-get install -y libturbojpeg
 
-RUN pip3 install setuptools
-RUN pip3 install "PyYAML>=5.3"
-RUN pip3 install scikit_image
-RUN pip3 install Cython
-#RUN pip3 install pycocotools
-RUN pip3 install matplotlib
-RUN pip3 install seaborn
-RUN pip3 install opencv_python
-RUN pip3 install "numpy>=1.16.*"
-RUN pip3 install imgaug
-RUN pip3 install pillow
-RUN pip3 install scipy
-RUN pip3 install termcolor
-RUN pip3 install ujson
-RUN pip3 install gevent
-RUN pip3 install asyncio
-RUN pip3 install GitPython
-#RUN pip3 install pycocotools
-RUN pip3 install tqdm
-RUN pip3 install pytorch_lightning
-RUN pip3 install -U "git+https://github.com/lilohuang/PyTurboJPEG.git"
-RUN pip3 install -U "git+https://github.com/ria-com/modelhub-client.git"
+RUN pip3 install opencv-python
+RUN pip3 install yolov5
+RUN pip3 install deepface
+RUN pip3 install torch
+RUN pip3 install torchvision
+RUN pip3 install git+https://github.com/ria-com/modelhub-client.git
 
 RUN pip install redis
-RUN pip install opencv-contrib-python-headless
 RUN pip install deepface
+RUN pip install psycopg2
 
 COPY . /app
 
-CMD ["python", "/app/main.py", "-s", "1"]
+CMD ["python", "/app/main.py"]
